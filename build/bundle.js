@@ -688,7 +688,6 @@ function isMobile(userAgent) {
         result.apple.tablet || result.android.tablet || result.windows.tablet;
     return result;
 }
-//# sourceMappingURL=isMobile.js.map
 
 var settings_1 = createCommonjsModule(function (module, exports) {
 
@@ -1008,7 +1007,7 @@ var settings = {
 
 exports.isMobile = isMobile$1;
 exports.settings = settings;
-//# sourceMappingURL=settings.js.map
+
 });
 
 unwrapExports(settings_1);
@@ -3534,7 +3533,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
     MASK_TYPES[MASK_TYPES["STENCIL"] = 2] = "STENCIL";
     MASK_TYPES[MASK_TYPES["SPRITE"] = 3] = "SPRITE";
 })(exports.MASK_TYPES || (exports.MASK_TYPES = {}));
-//# sourceMappingURL=constants.js.map
+
 });
 
 unwrapExports(constants);
@@ -4480,7 +4479,7 @@ exports.skipHello = skipHello;
 exports.string2hex = string2hex;
 exports.trimCanvas = trimCanvas;
 exports.uid = uid;
-//# sourceMappingURL=utils.js.map
+
 });
 
 unwrapExports(utils);
@@ -6441,7 +6440,7 @@ exports.Rectangle = Rectangle;
 exports.RoundedRectangle = RoundedRectangle;
 exports.Transform = Transform;
 exports.groupD8 = groupD8;
-//# sourceMappingURL=math.js.map
+
 });
 
 unwrapExports(math);
@@ -8364,7 +8363,7 @@ Container.prototype.containerUpdateTransform = Container.prototype.updateTransfo
 exports.Bounds = Bounds;
 exports.Container = Container;
 exports.DisplayObject = DisplayObject;
-//# sourceMappingURL=display.js.map
+
 });
 
 unwrapExports(display);
@@ -9067,7 +9066,7 @@ AccessibilityManager.prototype.destroy = function destroy ()
 
 exports.AccessibilityManager = AccessibilityManager;
 exports.accessibleTarget = accessibleTarget;
-//# sourceMappingURL=accessibility.js.map
+
 });
 
 unwrapExports(accessibility);
@@ -9915,7 +9914,7 @@ var TickerPlugin = /** @class */ (function () {
 
 exports.Ticker = Ticker;
 exports.TickerPlugin = TickerPlugin;
-//# sourceMappingURL=ticker.js.map
+
 });
 
 unwrapExports(ticker);
@@ -12526,7 +12525,7 @@ exports.InteractionEvent = InteractionEvent;
 exports.InteractionManager = InteractionManager;
 exports.InteractionTrackingData = InteractionTrackingData;
 exports.interactiveTarget = interactiveTarget;
-//# sourceMappingURL=interaction.js.map
+
 });
 
 unwrapExports(interaction);
@@ -12730,7 +12729,7 @@ Object.defineProperties(Runner.prototype, {
 });
 
 exports.Runner = Runner;
-//# sourceMappingURL=runner.js.map
+
 });
 
 unwrapExports(runner);
@@ -25835,7 +25834,7 @@ exports.defaultFilterVertex = defaultFilter;
 exports.defaultVertex = _default;
 exports.resources = index;
 exports.systems = systems;
-//# sourceMappingURL=core.js.map
+
 });
 
 unwrapExports(core);
@@ -26106,7 +26105,7 @@ ResizePlugin.destroy = function destroy ()
 Application.registerPlugin(ResizePlugin);
 
 exports.Application = Application;
-//# sourceMappingURL=app.js.map
+
 });
 
 unwrapExports(app);
@@ -26397,7 +26396,7 @@ Extract.arrayPostDivide = function arrayPostDivide (pixels, out)
 };
 
 exports.Extract = Extract;
-//# sourceMappingURL=extract.js.map
+
 });
 
 unwrapExports(extract);
@@ -28932,7 +28931,6 @@ Loader.use = function LoaderUseStatic(fn) {
 
   return Loader;
 };
-//# sourceMappingURL=resource-loader.esm.js.map
 
 var resourceLoader_esm = /*#__PURE__*/Object.freeze({
 	__proto__: null,
@@ -29248,7 +29246,7 @@ exports.AppLoaderPlugin = AppLoaderPlugin;
 exports.Loader = Loader;
 exports.LoaderResource = LoaderResource;
 exports.TextureLoader = TextureLoader;
-//# sourceMappingURL=loaders.js.map
+
 });
 
 unwrapExports(loaders);
@@ -30238,7 +30236,7 @@ var ParticleRenderer = /*@__PURE__*/(function (ObjectRenderer) {
 
 exports.ParticleContainer = ParticleContainer;
 exports.ParticleRenderer = ParticleRenderer;
-//# sourceMappingURL=particles.js.map
+
 });
 
 unwrapExports(particles);
@@ -34059,7 +34057,7 @@ exports.GraphicsData = GraphicsData;
 exports.GraphicsGeometry = GraphicsGeometry;
 exports.LineStyle = LineStyle;
 exports.graphicsUtils = index;
-//# sourceMappingURL=graphics.js.map
+
 });
 
 unwrapExports(graphics);
@@ -34752,7 +34750,7 @@ var Sprite = /*@__PURE__*/(function (Container) {
 }(display.Container));
 
 exports.Sprite = Sprite;
-//# sourceMappingURL=sprite.js.map
+
 });
 
 unwrapExports(sprite);
@@ -37064,7 +37062,7 @@ exports.TEXT_GRADIENT = TEXT_GRADIENT;
 exports.Text = Text;
 exports.TextMetrics = TextMetrics;
 exports.TextStyle = TextStyle;
-//# sourceMappingURL=text.js.map
+
 });
 
 unwrapExports(text);
@@ -37806,7 +37804,7 @@ exports.BasePrepare = BasePrepare;
 exports.CountLimiter = CountLimiter;
 exports.Prepare = Prepare;
 exports.TimeLimiter = TimeLimiter;
-//# sourceMappingURL=prepare.js.map
+
 });
 
 unwrapExports(prepare);
@@ -38226,7 +38224,7 @@ SpritesheetLoader.getResourcePath = function getResourcePath (resource, baseUrl)
 
 exports.Spritesheet = Spritesheet;
 exports.SpritesheetLoader = SpritesheetLoader;
-//# sourceMappingURL=spritesheet.js.map
+
 });
 
 unwrapExports(spritesheet);
@@ -38742,7 +38740,7 @@ var TilingSpriteRenderer = /*@__PURE__*/(function (ObjectRenderer) {
 
 exports.TilingSprite = TilingSprite;
 exports.TilingSpriteRenderer = TilingSpriteRenderer;
-//# sourceMappingURL=sprite-tiling.js.map
+
 });
 
 unwrapExports(spriteTiling);
@@ -39581,7 +39579,7 @@ BitmapFontLoader.use = function use (resource, next)
 
 exports.BitmapFontLoader = BitmapFontLoader;
 exports.BitmapText = BitmapText;
-//# sourceMappingURL=text-bitmap.js.map
+
 });
 
 unwrapExports(textBitmap);
@@ -39651,7 +39649,7 @@ var AlphaFilter = /*@__PURE__*/(function (Filter) {
 }(core.Filter));
 
 exports.AlphaFilter = AlphaFilter;
-//# sourceMappingURL=filter-alpha.js.map
+
 });
 
 unwrapExports(filterAlpha);
@@ -40083,7 +40081,7 @@ var BlurFilter = /*@__PURE__*/(function (Filter) {
 
 exports.BlurFilter = BlurFilter;
 exports.BlurFilterPass = BlurFilterPass;
-//# sourceMappingURL=filter-blur.js.map
+
 });
 
 unwrapExports(filterBlur);
@@ -40687,7 +40685,7 @@ var ColorMatrixFilter = /*@__PURE__*/(function (Filter) {
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
 exports.ColorMatrixFilter = ColorMatrixFilter;
-//# sourceMappingURL=filter-color-matrix.js.map
+
 });
 
 unwrapExports(filterColorMatrix);
@@ -40810,7 +40808,7 @@ var DisplacementFilter = /*@__PURE__*/(function (Filter) {
 }(core.Filter));
 
 exports.DisplacementFilter = DisplacementFilter;
-//# sourceMappingURL=filter-displacement.js.map
+
 });
 
 unwrapExports(filterDisplacement);
@@ -40852,7 +40850,7 @@ var FXAAFilter = /*@__PURE__*/(function (Filter) {
 }(core.Filter));
 
 exports.FXAAFilter = FXAAFilter;
-//# sourceMappingURL=filter-fxaa.js.map
+
 });
 
 unwrapExports(filterFxaa);
@@ -40936,7 +40934,7 @@ var NoiseFilter = /*@__PURE__*/(function (Filter) {
 }(core.Filter));
 
 exports.NoiseFilter = NoiseFilter;
-//# sourceMappingURL=filter-noise.js.map
+
 });
 
 unwrapExports(filterNoise);
@@ -42204,7 +42202,7 @@ exports.Mesh = Mesh;
 exports.MeshBatchUvs = MeshBatchUvs;
 exports.MeshGeometry = MeshGeometry;
 exports.MeshMaterial = MeshMaterial;
-//# sourceMappingURL=mesh.js.map
+
 });
 
 unwrapExports(mesh);
@@ -43026,7 +43024,7 @@ exports.RopeGeometry = RopeGeometry;
 exports.SimpleMesh = SimpleMesh;
 exports.SimplePlane = SimplePlane;
 exports.SimpleRope = SimpleRope;
-//# sourceMappingURL=mesh-extras.js.map
+
 });
 
 unwrapExports(meshExtras);
@@ -43490,7 +43488,7 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
  */
 
 exports.AnimatedSprite = AnimatedSprite;
-//# sourceMappingURL=sprite-animated.js.map
+
 });
 
 unwrapExports(spriteAnimated);
@@ -43518,27 +43516,51 @@ loaders_2.registerPlugin(spritesheet_2);
 
 app_1.registerPlugin(ticker_3);
 app_1.registerPlugin(loaders_1);
-//# sourceMappingURL=pixi.es.js.map
 
+var width = 800, height = 800, resolution = 5, noiseScale = 25;
+var colorMap = [
+    {
+        max: -0.4,
+        color: 0x496e5,
+    },
+    {
+        max: -0.35,
+        color: 0xd3930a,
+    }, {
+        max: 0.25,
+        color: 0x59b513,
+    }, {
+        max: 0.5,
+        color: 0x37a80f,
+    }, {
+        max: 2,
+        color: 0x606b68,
+    }
+];
 if (!utils_22()) ;
 var app$1 = new app_1({
-    width: 512,
-    height: 512,
+    width: width,
+    height: height,
 });
 document.body.appendChild(app$1.view);
-var rectangle = new graphics_3();
-rectangle.lineStyle(4, 0xFF3300, 1);
-rectangle.beginFill(0x66CCFF);
-rectangle.drawRect(0, 0, 64, 64);
-rectangle.endFill();
-rectangle.x = 170;
-rectangle.y = 170;
-app$1.stage.addChild(rectangle);
-var textStyle = new text_4({
-    fontFamily: "Arial",
-    fontSize: 16,
-    fill: "#fff",
-});
-var message = new text_2("Hive v1.0", textStyle);
-app$1.stage.addChild(message);
+function getNoise(x, y) {
+    return 1 * noise.perlin2(x / (noiseScale * 1), y / (noiseScale * 1))
+        + 0.5 * noise.perlin2(x / (noiseScale * 2), y / (noiseScale * 2))
+        + 0.25 * noise.perlin2(x / (noiseScale * 4), y / (noiseScale * 2));
+}
+noise.seed(Math.random());
+for (var x$1 = 0; x$1 < width / resolution; x$1++) {
+    for (var y = 0; y < height / resolution; y++) {
+        var value = getNoise(x$1, y);
+        var color = colorMap.find(function (colors) { return colors.max >= value; }).color;
+        var rectangle = new graphics_3();
+        rectangle.beginFill(color);
+        rectangle.drawRect(0, 0, resolution, resolution);
+        rectangle.endFill();
+        rectangle.x = x$1 * resolution;
+        rectangle.y = y * resolution;
+        app$1.stage.addChild(rectangle);
+    }
+}
+app$1.stage.filters = [];
 //# sourceMappingURL=bundle.js.map
