@@ -1,26 +1,50 @@
 import * as PIXI from 'pixi.js';
-import { Graphics, Text, TextStyle } from 'pixi.js';
+import { Graphics } from 'pixi.js';
+import * as dat from 'dat.gui';
+import { genMap } from './lib/genMap';
+import * as SimplexNoise from 'simplex-noise';
 
-declare var noise: any;
+const gui = new dat.GUI({
+  name: 'Setings',
+});
 
-const width = 800,
-      height = 800,
-      resolution = 5,
-      noiseScale = 25; // bigger => softer land features
+let simplexNoise: any;
+
+export type Options = {
+  width: number,
+  height: number,
+  resolution: number,
+  mapScale: number,
+};
+
+const options: Options = {
+  width: 500,
+  height: 500,
+  resolution: 5,
+  mapScale: 25, // bigger => softer land features
+};
+
+const methods = {
+  regenerate: seed,
+};
+
+gui.add(options, 'resolution', 5, 50, 1).onFinishChange(render);
+gui.add(options, 'mapScale', 1, 100, 1).onFinishChange(render);
+gui.add(methods, 'regenerate');
 
 const colorMap = [
   {
-    max: -0.4,
+    max: 0.1,
     color: 0x496e5, // water
   },
   {
-    max: -0.35,
+    max: 0.15,
     color: 0xd3930a, // sand
   }, {
-    max: 0.25,
+    max: 0.6,
     color: 0x59b513, // grass
   }, {
-    max: 0.5,
+    max: 0.8,
     color: 0x37a80f, // dark grass
   }, {
     max: 2,
@@ -28,64 +52,61 @@ const colorMap = [
   }
 ];
 
-let type = 'WebGL';
-if(!PIXI.utils.isWebGLSupported()){
-  type = 'canvas';
-}
-
 const app = new PIXI.Application({
-  width,
-  height,
+  width: options.width,
+  height: options.height,
 });
-document.body.appendChild(app.view);
+document.getElementById('map').appendChild(app.view);
 
-function getNoise(x: number, y: number) {
-  return 1 * noise.perlin2(x / (noiseScale * 1), y / (noiseScale * 1))
-         +  0.5 * noise.perlin2(x / (noiseScale * 2), y / (noiseScale * 2))
-         + 0.25 * noise.perlin2(x / (noiseScale * 4), y / (noiseScale * 2));
+const timers = {
+  seed: 0,
+  render: 0,
+};
+
+/**
+ * Generate a new seed and render the map
+ */
+function seed() {
+  timers.seed = performance.now();
+  simplexNoise = new (SimplexNoise as any).default();
+
+  const seedTimer = performance.now() - timers.seed;
+  document.getElementById('seed').innerText = `${Math.ceil(seedTimer)}ms`;
+
+  render();
 }
 
-let min = 1;
-let max = 0;
+/**
+ * Render the map with the given seed and options
+ */
+function render() {
+  timers.render = performance.now();
 
-noise.seed(Math.random());
+  const map = genMap(simplexNoise, options);
 
-for (var x = 0; x < width / resolution; x++) {
-  for (var y = 0; y < height / resolution; y++) {
-    var value = getNoise(x, y);
+  // Render the map
+  for (let x = 0; x < map.length; x++) {
+    for (let y = 0; y < map[x].length; y++) {
+      const value = map[x][y];
 
-    min = Math.min(min, value);
-    max = Math.max(max, value);
+      // TODO: This should just come from the type of block at some point
+      const color = colorMap.find(colors => colors.max >= value).color;
 
-    // get a color from this value
-    const color = colorMap.find(colors => colors.max >= value).color;
-
-    const rectangle = new Graphics();
-    rectangle.beginFill(color);
-    rectangle.drawRect(0, 0, resolution, resolution);
-    rectangle.endFill();
-    rectangle.x = x * resolution;
-    rectangle.y = y * resolution;
-    app.stage.addChild(rectangle);
+      const rectangle = new Graphics();
+      rectangle.beginFill(color);
+      rectangle.drawRect(0, 0, options.resolution, options.resolution);
+      rectangle.endFill();
+      rectangle.x = x * options.resolution;
+      rectangle.y = y * options.resolution;
+      app.stage.addChild(rectangle);
+    }
   }
+
+  const renderTimer = performance.now() - timers.render;
+  document.getElementById('render').innerText = `${Math.ceil(renderTimer)}ms`;
 }
 
+seed();
+
+// Enable filters on the app
 app.stage.filters = [];
-
-// const rectangle = new Graphics();
-// rectangle.lineStyle(4, 0xFF3300, 1);
-// rectangle.beginFill(0x66CCFF);
-// rectangle.drawRect(0, 0, 64, 64);
-// rectangle.endFill();
-// rectangle.x = 170;
-// rectangle.y = 170;
-// app.stage.addChild(rectangle);
-
-// const textStyle = new TextStyle({
-//   fontFamily: "Arial",
-//   fontSize: 16,
-//   fill: "#fff",
-// });
-
-// const message = new Text("Hive v1.0", textStyle);
-// app.stage.addChild(message);

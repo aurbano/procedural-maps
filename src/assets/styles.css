@@ -1,0 +1,26 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #333;
+  color: #efefef;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-weight: normal;
+}
+
+#map {
+  width: 500px;
+  height: 500px;
+  display: inline-block;
+  margin: 1em auto;
+  background: #666;
+  box-shadow: 0 3px 20px rgba(0,0,0,0.3);
+}
+
+footer {
+  color: #666;
+  margin-top: 1em;
+}
