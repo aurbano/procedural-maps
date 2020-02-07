@@ -5,6 +5,7 @@ import * as SimplexNoise from 'simplex-noise';
 
 const gui = new dat.GUI({
   name: 'Setings',
+
 });
 
 let elevationNoise: any;
@@ -15,25 +16,31 @@ export type Options = {
   height: number,
   resolution: number,
   mapScale: number,
+  moistureScale: number,
   rockElevation: number,
   waterElevation: number,
+  minimumWaterMoisture: number,
   sandElevation: number,
   grassMinimumMoisture: number,
   tallGrassMinimumMoisture: number,
   forestMinimumMoisture: number,
+  forestMinimumElevation: number,
 };
 
 const options: Options = {
-  width: 500,
-  height: 500,
+  width: 800,
+  height: 600,
   resolution: 5,
   mapScale: 25, // bigger => softer land features
+  moistureScale: 25, // bigger => softer land features
   waterElevation: 15, // incremental percentage of water
   sandElevation: 5,
+  minimumWaterMoisture: 20,
   rockElevation: 70,
   grassMinimumMoisture: 16,
   tallGrassMinimumMoisture: 30,
   forestMinimumMoisture: 33,
+  forestMinimumElevation: 30,
 };
 
 const methods = {
@@ -46,7 +53,7 @@ const colorMap: any = {
   [CELL_TYPES.DEEP_WATER]: 0x496e5,
   [CELL_TYPES.WATER]: 0x496e5,
   [CELL_TYPES.SAND]: 0xcea244,
-  [CELL_TYPES.DESERT]: 0x73bb33,
+  [CELL_TYPES.DRY_GRASS]: 0x73bb33,
   [CELL_TYPES.GRASS]: 0x59b513,
   [CELL_TYPES.TALL_GRASS]: 0x37a80f,
   [CELL_TYPES.FOREST]: 0x317515,
@@ -54,22 +61,27 @@ const colorMap: any = {
 };
 
 const rendering = gui.addFolder('Rendering');
+rendering.open();
 rendering.add(options, 'resolution', 1, 50, 1).onChange(render);
 rendering.add(options, 'mapScale', 1, 100, 1).onChange(render);
-rendering.add(options, 'mapScale', 1, 100, 1).onChange(render);
+rendering.add(options, 'moistureScale', 1, 100, 1).onChange(render);
 
 const dist = gui.addFolder('Distribution');
+dist.open();
 dist.add(options, 'waterElevation', 1, 100, 1).onChange(render);
+dist.add(options, 'minimumWaterMoisture', 1, 100, 1).onChange(render);
 dist.add(options, 'sandElevation', 1, 100, 1).onChange(render);
 dist.add(options, 'rockElevation', 1, 100, 1).onChange(render);
 dist.add(options, 'grassMinimumMoisture', 1, 100, 1).onChange(render);
 dist.add(options, 'tallGrassMinimumMoisture', 1, 100, 1).onChange(render);
 dist.add(options, 'forestMinimumMoisture', 1, 100, 1).onChange(render);
+dist.add(options, 'forestMinimumElevation', 1, 100, 1).onChange(render);
 
 const colors = gui.addFolder('Colors');
+colors.open();
 colors.addColor(colorMap, CELL_TYPES.WATER.toString()).onChange(render);
 colors.addColor(colorMap, CELL_TYPES.SAND.toString()).onChange(render);
-colors.addColor(colorMap, CELL_TYPES.DESERT.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.DRY_GRASS.toString()).onChange(render);
 colors.addColor(colorMap, CELL_TYPES.GRASS.toString()).onChange(render);
 colors.addColor(colorMap, CELL_TYPES.TALL_GRASS.toString()).onChange(render);
 colors.addColor(colorMap, CELL_TYPES.FOREST.toString()).onChange(render);

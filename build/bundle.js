@@ -46025,13 +46025,13 @@ var CELL_TYPES;
     CELL_TYPES["DEEP_WATER"] = "DEEP_WATER";
     CELL_TYPES["ROCK"] = "ROCK";
     CELL_TYPES["SAND"] = "SAND";
-    CELL_TYPES["DESERT"] = "DESERT";
+    CELL_TYPES["DRY_GRASS"] = "DRY_GRASS";
     CELL_TYPES["TALL_GRASS"] = "TALL_GRASS";
 })(CELL_TYPES || (CELL_TYPES = {}));
 function getTerrain(options, elevation, moisture) {
     var e = elevation * 100;
     var m = moisture * 100;
-    if (e < options.waterElevation)
+    if (m > options.minimumWaterMoisture && e < options.waterElevation)
         return CELL_TYPES.WATER;
     if (e < options.waterElevation + options.sandElevation)
         return CELL_TYPES.SAND;
@@ -46039,28 +46039,30 @@ function getTerrain(options, elevation, moisture) {
         return CELL_TYPES.ROCK;
     }
     if (m < options.grassMinimumMoisture)
-        return CELL_TYPES.DESERT;
+        return CELL_TYPES.DRY_GRASS;
     if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture)
         return CELL_TYPES.GRASS;
     if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture + options.forestMinimumMoisture)
         return CELL_TYPES.TALL_GRASS;
-    return CELL_TYPES.FOREST;
+    if (e > options.forestMinimumElevation)
+        return CELL_TYPES.FOREST;
+    return CELL_TYPES.GRASS;
 }
 var genMap = function (elevationNoise, moistureNoise, options) {
     var map = [];
     for (var x = 0; x < options.width / options.resolution; x++) {
         map[x] = [];
         for (var y = 0; y < options.height / options.resolution; y++) {
-            var elevationValue = getNoise(elevationNoise, x, y, options);
-            var moistureValue = getNoise(moistureNoise, x, y, options);
+            var elevationValue = getNoise(elevationNoise, x, y, options.mapScale);
+            var moistureValue = getNoise(moistureNoise, x, y, options.moistureScale);
             var terrainType = getTerrain(options, elevationValue, moistureValue);
             map[x][y] = terrainType;
         }
     }
     return map;
 };
-function getNoise(simplexNoise, x, y, options) {
-    var noiseValue = simplexNoise.noise2D(x / options.mapScale, y / options.mapScale);
+function getNoise(simplexNoise, x, y, noiseScale) {
+    var noiseValue = simplexNoise.noise2D(x / noiseScale, y / noiseScale);
     return noiseValue / 2 + 0.5;
 }
 //# sourceMappingURL=genMap.js.map
@@ -46543,16 +46545,19 @@ var gui = new GUI$1({
 var elevationNoise;
 var moistureNoise;
 var options = {
-    width: 500,
-    height: 500,
+    width: 800,
+    height: 600,
     resolution: 5,
     mapScale: 25,
+    moistureScale: 25,
     waterElevation: 15,
     sandElevation: 5,
+    minimumWaterMoisture: 20,
     rockElevation: 70,
     grassMinimumMoisture: 16,
     tallGrassMinimumMoisture: 30,
     forestMinimumMoisture: 33,
+    forestMinimumElevation: 30,
 };
 var methods = {
     regenerate: seed,
@@ -46563,27 +46568,32 @@ var colorMap = (_a = {},
     _a[CELL_TYPES.DEEP_WATER] = 0x496e5,
     _a[CELL_TYPES.WATER] = 0x496e5,
     _a[CELL_TYPES.SAND] = 0xcea244,
-    _a[CELL_TYPES.DESERT] = 0x73bb33,
+    _a[CELL_TYPES.DRY_GRASS] = 0x73bb33,
     _a[CELL_TYPES.GRASS] = 0x59b513,
     _a[CELL_TYPES.TALL_GRASS] = 0x37a80f,
     _a[CELL_TYPES.FOREST] = 0x317515,
     _a[CELL_TYPES.ROCK] = 0x606b68,
     _a);
 var rendering = gui.addFolder('Rendering');
+rendering.open();
 rendering.add(options, 'resolution', 1, 50, 1).onChange(render);
 rendering.add(options, 'mapScale', 1, 100, 1).onChange(render);
-rendering.add(options, 'mapScale', 1, 100, 1).onChange(render);
+rendering.add(options, 'moistureScale', 1, 100, 1).onChange(render);
 var dist = gui.addFolder('Distribution');
+dist.open();
 dist.add(options, 'waterElevation', 1, 100, 1).onChange(render);
+dist.add(options, 'minimumWaterMoisture', 1, 100, 1).onChange(render);
 dist.add(options, 'sandElevation', 1, 100, 1).onChange(render);
 dist.add(options, 'rockElevation', 1, 100, 1).onChange(render);
 dist.add(options, 'grassMinimumMoisture', 1, 100, 1).onChange(render);
 dist.add(options, 'tallGrassMinimumMoisture', 1, 100, 1).onChange(render);
 dist.add(options, 'forestMinimumMoisture', 1, 100, 1).onChange(render);
+dist.add(options, 'forestMinimumElevation', 1, 100, 1).onChange(render);
 var colors = gui.addFolder('Colors');
+colors.open();
 colors.addColor(colorMap, CELL_TYPES.WATER.toString()).onChange(render);
 colors.addColor(colorMap, CELL_TYPES.SAND.toString()).onChange(render);
-colors.addColor(colorMap, CELL_TYPES.DESERT.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.DRY_GRASS.toString()).onChange(render);
 colors.addColor(colorMap, CELL_TYPES.GRASS.toString()).onChange(render);
 colors.addColor(colorMap, CELL_TYPES.TALL_GRASS.toString()).onChange(render);
 colors.addColor(colorMap, CELL_TYPES.FOREST.toString()).onChange(render);

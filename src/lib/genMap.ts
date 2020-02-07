@@ -10,7 +10,7 @@ export enum CELL_TYPES {
   DEEP_WATER = 'DEEP_WATER',
   ROCK = 'ROCK',
   SAND = 'SAND',
-  DESERT = 'DESERT',
+  DRY_GRASS = 'DRY_GRASS',
   TALL_GRASS = 'TALL_GRASS',
 };
 
@@ -20,17 +20,18 @@ function getTerrain(options: Options, elevation: number, moisture: number): CELL
   const e = elevation * 100;
   const m = moisture * 100;
 
-  if (e < options.waterElevation) return CELL_TYPES.WATER;
+  if (m > options.minimumWaterMoisture && e < options.waterElevation) return CELL_TYPES.WATER;
   if (e < options.waterElevation + options.sandElevation) return CELL_TYPES.SAND;
 
   if (e > options.waterElevation + options.sandElevation+ options.rockElevation) {
     return CELL_TYPES.ROCK;
   }
 
-  if (m < options.grassMinimumMoisture) return CELL_TYPES.DESERT;
+  if (m < options.grassMinimumMoisture) return CELL_TYPES.DRY_GRASS;
   if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture) return CELL_TYPES.GRASS;
   if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture + options.forestMinimumMoisture) return CELL_TYPES.TALL_GRASS;
-  return CELL_TYPES.FOREST;
+  if (e > options.forestMinimumElevation) return CELL_TYPES.FOREST;
+  return CELL_TYPES.GRASS;
 }
 
 /**
@@ -47,8 +48,8 @@ export const genMap = (elevationNoise: SimplexNoise, moistureNoise: SimplexNoise
     map[x] = [];
 
     for (let y = 0; y < options.height / options.resolution; y++) {
-      const elevationValue = getNoise(elevationNoise, x, y, options);
-      const moistureValue = getNoise(moistureNoise, x, y, options);
+      const elevationValue = getNoise(elevationNoise, x, y, options.mapScale);
+      const moistureValue = getNoise(moistureNoise, x, y, options.moistureScale);
 
       // Now use the noise values to determine the block type
       const terrainType = getTerrain(options, elevationValue, moistureValue);
@@ -65,10 +66,10 @@ export const genMap = (elevationNoise: SimplexNoise, moistureNoise: SimplexNoise
  * @param x
  * @param y
  */
-function getNoise(simplexNoise: SimplexNoise, x: number, y: number, options: Options) {
+function getNoise(simplexNoise: SimplexNoise, x: number, y: number, noiseScale: number) {
   const noiseValue = simplexNoise.noise2D(
-      x / options.mapScale,
-      y / options.mapScale
+      x / noiseScale,
+      y / noiseScale
     );
   return noiseValue / 2 + 0.5;
 }
