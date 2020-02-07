@@ -46531,8 +46531,8 @@ var options = {
 var methods = {
     regenerate: seed,
 };
-gui.add(options, 'resolution', 5, 50, 1).onFinishChange(render);
-gui.add(options, 'mapScale', 1, 100, 1).onFinishChange(render);
+gui.add(options, 'resolution', 5, 50, 1).onChange(render);
+gui.add(options, 'mapScale', 1, 100, 1).onChange(render);
 gui.add(methods, 'regenerate');
 var colorMap = [
     {
@@ -46558,6 +46558,9 @@ var app$1 = new app_1({
     height: options.height,
 });
 document.getElementById('map').appendChild(app$1.view);
+var renderer = app$1.stage;
+var scene = new graphics_3();
+renderer.addChild(scene);
 var timers = {
     seed: 0,
     render: 0,
@@ -46571,18 +46574,14 @@ function seed() {
 }
 function render() {
     timers.render = performance.now();
+    scene.clear();
     var map = genMap(simplexNoise$1, options);
     for (var x = 0; x < map.length; x++) {
         var _loop_1 = function (y) {
             var value = map[x][y];
             var color = colorMap.find(function (colors) { return colors.max >= value; }).color;
-            var rectangle = new graphics_3();
-            rectangle.beginFill(color);
-            rectangle.drawRect(0, 0, options.resolution, options.resolution);
-            rectangle.endFill();
-            rectangle.x = x * options.resolution;
-            rectangle.y = y * options.resolution;
-            app$1.stage.addChild(rectangle);
+            scene.beginFill(color);
+            scene.drawRect(x * options.resolution, y * options.resolution, options.resolution, options.resolution);
         };
         for (var y = 0; y < map[x].length; y++) {
             _loop_1(y);

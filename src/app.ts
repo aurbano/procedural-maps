@@ -1,5 +1,4 @@
 import * as PIXI from 'pixi.js';
-import { Graphics } from 'pixi.js';
 import * as dat from 'dat.gui';
 import { genMap } from './lib/genMap';
 import * as SimplexNoise from 'simplex-noise';
@@ -28,8 +27,8 @@ const methods = {
   regenerate: seed,
 };
 
-gui.add(options, 'resolution', 5, 50, 1).onFinishChange(render);
-gui.add(options, 'mapScale', 1, 100, 1).onFinishChange(render);
+gui.add(options, 'resolution', 5, 50, 1).onChange(render);
+gui.add(options, 'mapScale', 1, 100, 1).onChange(render);
 gui.add(methods, 'regenerate');
 
 const colorMap = [
@@ -58,6 +57,10 @@ const app = new PIXI.Application({
 });
 document.getElementById('map').appendChild(app.view);
 
+const renderer = app.stage;
+const scene = new PIXI.Graphics();
+renderer.addChild(scene);
+
 const timers = {
   seed: 0,
   render: 0,
@@ -82,6 +85,8 @@ function seed() {
 function render() {
   timers.render = performance.now();
 
+  scene.clear();
+
   const map = genMap(simplexNoise, options);
 
   // Render the map
@@ -92,13 +97,13 @@ function render() {
       // TODO: This should just come from the type of block at some point
       const color = colorMap.find(colors => colors.max >= value).color;
 
-      const rectangle = new Graphics();
-      rectangle.beginFill(color);
-      rectangle.drawRect(0, 0, options.resolution, options.resolution);
-      rectangle.endFill();
-      rectangle.x = x * options.resolution;
-      rectangle.y = y * options.resolution;
-      app.stage.addChild(rectangle);
+      scene.beginFill(color);
+      scene.drawRect(
+        x * options.resolution,
+        y * options.resolution,
+        options.resolution,
+        options.resolution
+      );
     }
   }
 
