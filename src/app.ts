@@ -1,19 +1,26 @@
 import * as PIXI from 'pixi.js';
 import * as dat from 'dat.gui';
-import { genMap } from './lib/genMap';
+import { genMap, CELL_TYPES } from './lib/genMap';
 import * as SimplexNoise from 'simplex-noise';
 
 const gui = new dat.GUI({
   name: 'Setings',
 });
 
-let simplexNoise: any;
+let elevationNoise: any;
+let moistureNoise: any;
 
 export type Options = {
   width: number,
   height: number,
   resolution: number,
   mapScale: number,
+  rockElevation: number,
+  waterElevation: number,
+  sandElevation: number,
+  grassMinimumMoisture: number,
+  tallGrassMinimumMoisture: number,
+  forestMinimumMoisture: number,
 };
 
 const options: Options = {
@@ -21,35 +28,54 @@ const options: Options = {
   height: 500,
   resolution: 5,
   mapScale: 25, // bigger => softer land features
+  waterElevation: 15, // incremental percentage of water
+  sandElevation: 5,
+  rockElevation: 70,
+  grassMinimumMoisture: 16,
+  tallGrassMinimumMoisture: 30,
+  forestMinimumMoisture: 33,
 };
 
 const methods = {
   regenerate: seed,
 };
 
-gui.add(options, 'resolution', 5, 50, 1).onChange(render);
-gui.add(options, 'mapScale', 1, 100, 1).onChange(render);
-gui.add(methods, 'regenerate');
+const colorMap: any = {
+  [CELL_TYPES.ANT]: 0x4611aa,
+  [CELL_TYPES.COLONY]: 0xe51476,
+  [CELL_TYPES.DEEP_WATER]: 0x496e5,
+  [CELL_TYPES.WATER]: 0x496e5,
+  [CELL_TYPES.SAND]: 0xcea244,
+  [CELL_TYPES.DESERT]: 0x73bb33,
+  [CELL_TYPES.GRASS]: 0x59b513,
+  [CELL_TYPES.TALL_GRASS]: 0x37a80f,
+  [CELL_TYPES.FOREST]: 0x317515,
+  [CELL_TYPES.ROCK]: 0x606b68,
+};
 
-const colorMap = [
-  {
-    max: 0.1,
-    color: 0x496e5, // water
-  },
-  {
-    max: 0.15,
-    color: 0xd3930a, // sand
-  }, {
-    max: 0.6,
-    color: 0x59b513, // grass
-  }, {
-    max: 0.8,
-    color: 0x37a80f, // dark grass
-  }, {
-    max: 2,
-    color: 0x606b68, // mountain
-  }
-];
+const rendering = gui.addFolder('Rendering');
+rendering.add(options, 'resolution', 1, 50, 1).onChange(render);
+rendering.add(options, 'mapScale', 1, 100, 1).onChange(render);
+rendering.add(options, 'mapScale', 1, 100, 1).onChange(render);
+
+const dist = gui.addFolder('Distribution');
+dist.add(options, 'waterElevation', 1, 100, 1).onChange(render);
+dist.add(options, 'sandElevation', 1, 100, 1).onChange(render);
+dist.add(options, 'rockElevation', 1, 100, 1).onChange(render);
+dist.add(options, 'grassMinimumMoisture', 1, 100, 1).onChange(render);
+dist.add(options, 'tallGrassMinimumMoisture', 1, 100, 1).onChange(render);
+dist.add(options, 'forestMinimumMoisture', 1, 100, 1).onChange(render);
+
+const colors = gui.addFolder('Colors');
+colors.addColor(colorMap, CELL_TYPES.WATER.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.SAND.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.DESERT.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.GRASS.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.TALL_GRASS.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.FOREST.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.ROCK.toString()).onChange(render);
+
+gui.add(methods, 'regenerate');
 
 const app = new PIXI.Application({
   width: options.width,
@@ -71,7 +97,8 @@ const timers = {
  */
 function seed() {
   timers.seed = performance.now();
-  simplexNoise = new (SimplexNoise as any).default();
+  elevationNoise = new (SimplexNoise as any).default();
+  moistureNoise = new (SimplexNoise as any).default();
 
   const seedTimer = performance.now() - timers.seed;
   document.getElementById('seed').innerText = `${Math.ceil(seedTimer)}ms`;
@@ -87,15 +114,15 @@ function render() {
 
   scene.clear();
 
-  const map = genMap(simplexNoise, options);
+  const map = genMap(elevationNoise, moistureNoise, options);
 
   // Render the map
   for (let x = 0; x < map.length; x++) {
-    for (let y = 0; y < map[x].length; y++) {
-      const value = map[x][y];
+    for (let y = 0; y < map[0].length; y++) {
+      const value: CELL_TYPES = map[x][y];
 
       // TODO: This should just come from the type of block at some point
-      const color = colorMap.find(colors => colors.max >= value).color;
+      const color: number = colorMap[value] || CELL_TYPES.GRASS;
 
       scene.beginFill(color);
       scene.drawRect(

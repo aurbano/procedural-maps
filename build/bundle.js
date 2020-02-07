@@ -46015,28 +46015,46 @@ function updateDisplays(controllerArray) {
 var GUI$1 = GUI;
 //# sourceMappingURL=dat.gui.module.js.map
 
-var _a;
 var CELL_TYPES;
 (function (CELL_TYPES) {
-    CELL_TYPES[CELL_TYPES["ANT"] = -1] = "ANT";
-    CELL_TYPES[CELL_TYPES["COLONY"] = -2] = "COLONY";
-    CELL_TYPES[CELL_TYPES["GRASS"] = 0] = "GRASS";
-    CELL_TYPES[CELL_TYPES["FOREST"] = 1] = "FOREST";
-    CELL_TYPES[CELL_TYPES["WATER"] = 2] = "WATER";
-    CELL_TYPES[CELL_TYPES["DEEP_WATER"] = 3] = "DEEP_WATER";
-    CELL_TYPES[CELL_TYPES["ROCK"] = 4] = "ROCK";
-    CELL_TYPES[CELL_TYPES["SAND"] = 5] = "SAND";
+    CELL_TYPES["ANT"] = "ANT";
+    CELL_TYPES["COLONY"] = "COLONY";
+    CELL_TYPES["GRASS"] = "GRASS";
+    CELL_TYPES["FOREST"] = "FOREST";
+    CELL_TYPES["WATER"] = "WATER";
+    CELL_TYPES["DEEP_WATER"] = "DEEP_WATER";
+    CELL_TYPES["ROCK"] = "ROCK";
+    CELL_TYPES["SAND"] = "SAND";
+    CELL_TYPES["DESERT"] = "DESERT";
+    CELL_TYPES["TALL_GRASS"] = "TALL_GRASS";
 })(CELL_TYPES || (CELL_TYPES = {}));
-var RANGES = (_a = {},
-    _a[CELL_TYPES.GRASS] = [0, 1],
-    _a);
-var genMap = function (simplexNoise, options) {
+function getTerrain(options, elevation, moisture) {
+    var e = elevation * 100;
+    var m = moisture * 100;
+    if (e < options.waterElevation)
+        return CELL_TYPES.WATER;
+    if (e < options.waterElevation + options.sandElevation)
+        return CELL_TYPES.SAND;
+    if (e > options.waterElevation + options.sandElevation + options.rockElevation) {
+        return CELL_TYPES.ROCK;
+    }
+    if (m < options.grassMinimumMoisture)
+        return CELL_TYPES.DESERT;
+    if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture)
+        return CELL_TYPES.GRASS;
+    if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture + options.forestMinimumMoisture)
+        return CELL_TYPES.TALL_GRASS;
+    return CELL_TYPES.FOREST;
+}
+var genMap = function (elevationNoise, moistureNoise, options) {
     var map = [];
     for (var x = 0; x < options.width / options.resolution; x++) {
         map[x] = [];
         for (var y = 0; y < options.height / options.resolution; y++) {
-            var value = getNoise(simplexNoise, x, y, options);
-            map[x][y] = value;
+            var elevationValue = getNoise(elevationNoise, x, y, options);
+            var moistureValue = getNoise(moistureNoise, x, y, options);
+            var terrainType = getTerrain(options, elevationValue, moistureValue);
+            map[x][y] = terrainType;
         }
     }
     return map;
@@ -46518,41 +46536,59 @@ Better rank ordering method by Stefan Gustavson in 2012.
 });
 var simplexNoise_1 = simplexNoise.SimplexNoise;
 
+var _a;
 var gui = new GUI$1({
     name: 'Setings',
 });
-var simplexNoise$1;
+var elevationNoise;
+var moistureNoise;
 var options = {
     width: 500,
     height: 500,
     resolution: 5,
     mapScale: 25,
+    waterElevation: 15,
+    sandElevation: 5,
+    rockElevation: 70,
+    grassMinimumMoisture: 16,
+    tallGrassMinimumMoisture: 30,
+    forestMinimumMoisture: 33,
 };
 var methods = {
     regenerate: seed,
 };
-gui.add(options, 'resolution', 5, 50, 1).onChange(render);
-gui.add(options, 'mapScale', 1, 100, 1).onChange(render);
+var colorMap = (_a = {},
+    _a[CELL_TYPES.ANT] = 0x4611aa,
+    _a[CELL_TYPES.COLONY] = 0xe51476,
+    _a[CELL_TYPES.DEEP_WATER] = 0x496e5,
+    _a[CELL_TYPES.WATER] = 0x496e5,
+    _a[CELL_TYPES.SAND] = 0xcea244,
+    _a[CELL_TYPES.DESERT] = 0x73bb33,
+    _a[CELL_TYPES.GRASS] = 0x59b513,
+    _a[CELL_TYPES.TALL_GRASS] = 0x37a80f,
+    _a[CELL_TYPES.FOREST] = 0x317515,
+    _a[CELL_TYPES.ROCK] = 0x606b68,
+    _a);
+var rendering = gui.addFolder('Rendering');
+rendering.add(options, 'resolution', 1, 50, 1).onChange(render);
+rendering.add(options, 'mapScale', 1, 100, 1).onChange(render);
+rendering.add(options, 'mapScale', 1, 100, 1).onChange(render);
+var dist = gui.addFolder('Distribution');
+dist.add(options, 'waterElevation', 1, 100, 1).onChange(render);
+dist.add(options, 'sandElevation', 1, 100, 1).onChange(render);
+dist.add(options, 'rockElevation', 1, 100, 1).onChange(render);
+dist.add(options, 'grassMinimumMoisture', 1, 100, 1).onChange(render);
+dist.add(options, 'tallGrassMinimumMoisture', 1, 100, 1).onChange(render);
+dist.add(options, 'forestMinimumMoisture', 1, 100, 1).onChange(render);
+var colors = gui.addFolder('Colors');
+colors.addColor(colorMap, CELL_TYPES.WATER.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.SAND.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.DESERT.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.GRASS.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.TALL_GRASS.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.FOREST.toString()).onChange(render);
+colors.addColor(colorMap, CELL_TYPES.ROCK.toString()).onChange(render);
 gui.add(methods, 'regenerate');
-var colorMap = [
-    {
-        max: 0.1,
-        color: 0x496e5,
-    },
-    {
-        max: 0.15,
-        color: 0xd3930a,
-    }, {
-        max: 0.6,
-        color: 0x59b513,
-    }, {
-        max: 0.8,
-        color: 0x37a80f,
-    }, {
-        max: 2,
-        color: 0x606b68,
-    }
-];
 var app$1 = new app_1({
     width: options.width,
     height: options.height,
@@ -46567,7 +46603,8 @@ var timers = {
 };
 function seed() {
     timers.seed = performance.now();
-    simplexNoise$1 = new simplexNoise();
+    elevationNoise = new simplexNoise();
+    moistureNoise = new simplexNoise();
     var seedTimer = performance.now() - timers.seed;
     document.getElementById('seed').innerText = Math.ceil(seedTimer) + "ms";
     render();
@@ -46575,16 +46612,13 @@ function seed() {
 function render() {
     timers.render = performance.now();
     scene.clear();
-    var map = genMap(simplexNoise$1, options);
+    var map = genMap(elevationNoise, moistureNoise, options);
     for (var x = 0; x < map.length; x++) {
-        var _loop_1 = function (y) {
+        for (var y = 0; y < map[0].length; y++) {
             var value = map[x][y];
-            var color = colorMap.find(function (colors) { return colors.max >= value; }).color;
+            var color = colorMap[value] || CELL_TYPES.GRASS;
             scene.beginFill(color);
             scene.drawRect(x * options.resolution, y * options.resolution, options.resolution, options.resolution);
-        };
-        for (var y = 0; y < map[x].length; y++) {
-            _loop_1(y);
         }
     }
     var renderTimer = performance.now() - timers.render;

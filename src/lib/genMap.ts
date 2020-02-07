@@ -2,28 +2,42 @@ import { Options } from "../app";
 import * as SimplexNoise from 'simplex-noise';
 
 export enum CELL_TYPES {
-  ANT = -1,
-  COLONY = -2,
-  GRASS = 0,
-  FOREST = 1,
-  WATER = 2,
-  DEEP_WATER = 3,
-  ROCK = 4,
-  SAND = 5,
-};
-
-const RANGES = {
-  [CELL_TYPES.GRASS]: [0, 1],
+  ANT = 'ANT',
+  COLONY = 'COLONY',
+  GRASS = 'GRASS',
+  FOREST = 'FOREST',
+  WATER = 'WATER',
+  DEEP_WATER = 'DEEP_WATER',
+  ROCK = 'ROCK',
+  SAND = 'SAND',
+  DESERT = 'DESERT',
+  TALL_GRASS = 'TALL_GRASS',
 };
 
 export type Map = Array<Array<CELL_TYPES>>;
 
+function getTerrain(options: Options, elevation: number, moisture: number): CELL_TYPES {
+  const e = elevation * 100;
+  const m = moisture * 100;
+
+  if (e < options.waterElevation) return CELL_TYPES.WATER;
+  if (e < options.waterElevation + options.sandElevation) return CELL_TYPES.SAND;
+
+  if (e > options.waterElevation + options.sandElevation+ options.rockElevation) {
+    return CELL_TYPES.ROCK;
+  }
+
+  if (m < options.grassMinimumMoisture) return CELL_TYPES.DESERT;
+  if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture) return CELL_TYPES.GRASS;
+  if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture + options.forestMinimumMoisture) return CELL_TYPES.TALL_GRASS;
+  return CELL_TYPES.FOREST;
+}
 
 /**
  * Map generation
  * Support for elevation and moisture
  */
-export const genMap = (simplexNoise: SimplexNoise, options: Options): Map => {
+export const genMap = (elevationNoise: SimplexNoise, moistureNoise: SimplexNoise, options: Options): Map => {
   const map: Map = [];
 
   const elevationMap: Array<Array<number>> = [];
@@ -33,10 +47,13 @@ export const genMap = (simplexNoise: SimplexNoise, options: Options): Map => {
     map[x] = [];
 
     for (let y = 0; y < options.height / options.resolution; y++) {
-      const value = getNoise(simplexNoise, x, y, options);
+      const elevationValue = getNoise(elevationNoise, x, y, options);
+      const moistureValue = getNoise(moistureNoise, x, y, options);
 
-      // TODO Calculate type of block for this coordinates
-      map[x][y] = value;
+      // Now use the noise values to determine the block type
+      const terrainType = getTerrain(options, elevationValue, moistureValue);
+
+      map[x][y] = terrainType;
     }
   }
 
