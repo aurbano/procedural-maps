@@ -1,7 +1,7 @@
 {
-  "name": "hive-ui",
+  "name": "procedural-maps",
   "version": "1.0.0",
-  "description": "UI for our Hive game",
+  "description": "Procedural Map Generator",
   "scripts": {
     "start": "npm-run-all --parallel build:watch serve",
     "build": "rollup -c",
@@ -9,7 +9,8 @@
     "serve": "browser-sync start -s -f build/**/*"
   },
   "main": "index.js",
-  "repository": "git@github.com:socialgorithm/hive-ui.git",
+  "homepage": "https://github.com/aurbano/procedural-maps",
+  "repository": "git@github.com:aurbano/procedural-maps.git",
   "author": "Alejandro U. Alvarez <aluralma@gmail.com>",
   "license": "AGPL-3",
   "private": true,
