@@ -1,4 +1,4 @@
-import { Options } from "../app";
+import { Options } from "../model/types";
 import * as SimplexNoise from 'simplex-noise';
 
 export enum CELL_TYPES {
