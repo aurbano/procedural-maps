@@ -2,15 +2,21 @@ export type Options = {
   width: number,
   height: number,
   mapContainerId: string,
+
   resolution: number,
   mapScale: number,
   moistureScale: number,
-  rockElevation: number,
-  waterElevation: number,
-  minimumWaterMoisture: number,
-  sandElevation: number,
-  grassMinimumMoisture: number,
-  tallGrassMinimumMoisture: number,
-  forestMinimumMoisture: number,
-  forestMinimumElevation: number,
+
+  waterMaxElevation: number,
+  sandMaxElevation: number,
+
+  rockMinElevation: number,
+
+  grassMinMoisture: number,
+  tallGrassMinElevation: number,
+  tallGrassMinMoisture: number,
+
+  forestMinMoisture: number,
+  forestMaxMoisture: number,
+  forestMaxElevation: number,
 };

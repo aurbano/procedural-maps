@@ -16,21 +16,29 @@ export enum CELL_TYPES {
 
 export type Map = Array<Array<CELL_TYPES>>;
 
-function getTerrain(options: Options, elevation: number, moisture: number): CELL_TYPES {
-  const e = elevation * 100;
-  const m = moisture * 100;
+/**
+ * Terrain is generated using two noise values, one for elevation and one for moisture
+ * Elevation determines rocks and water. Moisture is used to introduce variance in the
+ * space between water and rocks.
+ *
+ * Around mountains there should be tall grass
+ * Forests should appear far from rocks, in places where moisture is not too large
+ */
+function getTerrain(o: Options, elevation: number, moisture: number): CELL_TYPES {
+  const e = elevation * 100; // elevation [0, 100]
+  const m = moisture * 100;  // moisture [0, 100]
 
-  if (m > options.minimumWaterMoisture && e < options.waterElevation) return CELL_TYPES.WATER;
-  if (e < options.waterElevation + options.sandElevation) return CELL_TYPES.SAND;
+  if (e < o.waterMaxElevation / 3) return CELL_TYPES.DEEP_WATER;
+  if (e < o.waterMaxElevation) return CELL_TYPES.WATER;
+  if (e < o.waterMaxElevation + o.sandMaxElevation) return CELL_TYPES.SAND;
 
-  if (e > options.waterElevation + options.sandElevation+ options.rockElevation) {
-    return CELL_TYPES.ROCK;
-  }
+  if (e > o.rockMinElevation) return CELL_TYPES.ROCK;
+  if (e > o.rockMinElevation - o.sandMaxElevation) return CELL_TYPES.TALL_GRASS;
 
-  if (m < options.grassMinimumMoisture) return CELL_TYPES.DRY_GRASS;
-  if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture) return CELL_TYPES.GRASS;
-  if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture + options.forestMinimumMoisture) return CELL_TYPES.TALL_GRASS;
-  if (e > options.forestMinimumElevation) return CELL_TYPES.FOREST;
+  if (m < o.grassMinMoisture) return CELL_TYPES.DRY_GRASS;
+  if (e < o.forestMaxElevation && m > o.forestMinMoisture && m < o.forestMaxMoisture) return CELL_TYPES.FOREST;
+  if (e > o.tallGrassMinElevation && m > o.tallGrassMinMoisture) return CELL_TYPES.TALL_GRASS;
+
   return CELL_TYPES.GRASS;
 }
 

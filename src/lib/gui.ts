@@ -16,24 +16,29 @@ export function setupGui(options: Options, colorMap: any, methods: any, calculat
 
   const dist = gui.addFolder('Distribution');
   dist.open();
-  dist.add(options, 'waterElevation', 1, 100, 1).onChange(render);
-  dist.add(options, 'minimumWaterMoisture', 1, 100, 1).onChange(render);
-  dist.add(options, 'sandElevation', 1, 100, 1).onChange(render);
-  dist.add(options, 'rockElevation', 1, 100, 1).onChange(render);
-  dist.add(options, 'grassMinimumMoisture', 1, 100, 1).onChange(render);
-  dist.add(options, 'tallGrassMinimumMoisture', 1, 100, 1).onChange(render);
-  dist.add(options, 'forestMinimumMoisture', 1, 100, 1).onChange(render);
-  dist.add(options, 'forestMinimumElevation', 1, 100, 1).onChange(render);
+  dist.add(options, 'waterMaxElevation', 1, 100, 1).onChange(render);
+  dist.add(options, 'sandMaxElevation', 1, 100, 1).onChange(render);
 
-  const colors = gui.addFolder('Colors');
-  colors.open();
-  colors.addColor(colorMap, CELL_TYPES.WATER.toString()).onChange(calculateSpritesAndRender);
-  colors.addColor(colorMap, CELL_TYPES.SAND.toString()).onChange(calculateSpritesAndRender);
-  colors.addColor(colorMap, CELL_TYPES.DRY_GRASS.toString()).onChange(calculateSpritesAndRender);
-  colors.addColor(colorMap, CELL_TYPES.GRASS.toString()).onChange(calculateSpritesAndRender);
-  colors.addColor(colorMap, CELL_TYPES.TALL_GRASS.toString()).onChange(calculateSpritesAndRender);
-  colors.addColor(colorMap, CELL_TYPES.FOREST.toString()).onChange(calculateSpritesAndRender);
-  colors.addColor(colorMap, CELL_TYPES.ROCK.toString()).onChange(calculateSpritesAndRender);
+  dist.add(options, 'rockMinElevation', 1, 100, 1).onChange(render);
+
+  dist.add(options, 'grassMinMoisture', 1, 100, 1).onChange(render);
+  dist.add(options, 'tallGrassMinElevation', 1, 100, 1).onChange(render);
+  dist.add(options, 'tallGrassMinMoisture', 1, 100, 1).onChange(render);
+
+  dist.add(options, 'forestMinMoisture', 1, 100, 1).onChange(render);
+  dist.add(options, 'forestMaxMoisture', 1, 100, 1).onChange(render);
+  dist.add(options, 'forestMaxElevation', 1, 100, 1).onChange(render);
+
+  // const colors = gui.addFolder('Colors');
+  // colors.open();
+  // colors.addColor(colorMap, CELL_TYPES.DEEP_WATER.toString()).onChange(calculateSpritesAndRender);
+  // colors.addColor(colorMap, CELL_TYPES.WATER.toString()).onChange(calculateSpritesAndRender);
+  // colors.addColor(colorMap, CELL_TYPES.SAND.toString()).onChange(calculateSpritesAndRender);
+  // colors.addColor(colorMap, CELL_TYPES.DRY_GRASS.toString()).onChange(calculateSpritesAndRender);
+  // colors.addColor(colorMap, CELL_TYPES.GRASS.toString()).onChange(calculateSpritesAndRender);
+  // colors.addColor(colorMap, CELL_TYPES.TALL_GRASS.toString()).onChange(calculateSpritesAndRender);
+  // colors.addColor(colorMap, CELL_TYPES.FOREST.toString()).onChange(calculateSpritesAndRender);
+  // colors.addColor(colorMap, CELL_TYPES.ROCK.toString()).onChange(calculateSpritesAndRender);
 
   gui.add(methods, 'Regenerate');
 

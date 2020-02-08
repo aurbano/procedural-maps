@@ -11,24 +11,25 @@ var CELL_TYPES;
     CELL_TYPES["DRY_GRASS"] = "DRY_GRASS";
     CELL_TYPES["TALL_GRASS"] = "TALL_GRASS";
 })(CELL_TYPES || (CELL_TYPES = {}));
-function getTerrain(options, elevation, moisture) {
+function getTerrain(o, elevation, moisture) {
     var e = elevation * 100;
     var m = moisture * 100;
-    if (m > options.minimumWaterMoisture && e < options.waterElevation)
+    if (e < o.waterMaxElevation / 3)
+        return CELL_TYPES.DEEP_WATER;
+    if (e < o.waterMaxElevation)
         return CELL_TYPES.WATER;
-    if (e < options.waterElevation + options.sandElevation)
+    if (e < o.waterMaxElevation + o.sandMaxElevation)
         return CELL_TYPES.SAND;
-    if (e > options.waterElevation + options.sandElevation + options.rockElevation) {
+    if (e > o.rockMinElevation)
         return CELL_TYPES.ROCK;
-    }
-    if (m < options.grassMinimumMoisture)
-        return CELL_TYPES.DRY_GRASS;
-    if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture)
-        return CELL_TYPES.GRASS;
-    if (m < options.grassMinimumMoisture + options.tallGrassMinimumMoisture + options.forestMinimumMoisture)
+    if (e > o.rockMinElevation - o.sandMaxElevation)
         return CELL_TYPES.TALL_GRASS;
-    if (e > options.forestMinimumElevation)
+    if (m < o.grassMinMoisture)
+        return CELL_TYPES.DRY_GRASS;
+    if (e < o.forestMaxElevation && m > o.forestMinMoisture && m < o.forestMaxMoisture)
         return CELL_TYPES.FOREST;
+    if (e > o.tallGrassMinElevation && m > o.tallGrassMinMoisture)
+        return CELL_TYPES.TALL_GRASS;
     return CELL_TYPES.GRASS;
 }
 var genMap = function (elevationNoise, moistureNoise, options) {
@@ -46615,55 +46616,49 @@ function setupGui(options, colorMap, methods, calculateSpritesAndRender, render)
     rendering.add(options, 'moistureScale', 1, 100, 1).onChange(render);
     var dist = gui.addFolder('Distribution');
     dist.open();
-    dist.add(options, 'waterElevation', 1, 100, 1).onChange(render);
-    dist.add(options, 'minimumWaterMoisture', 1, 100, 1).onChange(render);
-    dist.add(options, 'sandElevation', 1, 100, 1).onChange(render);
-    dist.add(options, 'rockElevation', 1, 100, 1).onChange(render);
-    dist.add(options, 'grassMinimumMoisture', 1, 100, 1).onChange(render);
-    dist.add(options, 'tallGrassMinimumMoisture', 1, 100, 1).onChange(render);
-    dist.add(options, 'forestMinimumMoisture', 1, 100, 1).onChange(render);
-    dist.add(options, 'forestMinimumElevation', 1, 100, 1).onChange(render);
-    var colors = gui.addFolder('Colors');
-    colors.open();
-    colors.addColor(colorMap, CELL_TYPES.WATER.toString()).onChange(calculateSpritesAndRender);
-    colors.addColor(colorMap, CELL_TYPES.SAND.toString()).onChange(calculateSpritesAndRender);
-    colors.addColor(colorMap, CELL_TYPES.DRY_GRASS.toString()).onChange(calculateSpritesAndRender);
-    colors.addColor(colorMap, CELL_TYPES.GRASS.toString()).onChange(calculateSpritesAndRender);
-    colors.addColor(colorMap, CELL_TYPES.TALL_GRASS.toString()).onChange(calculateSpritesAndRender);
-    colors.addColor(colorMap, CELL_TYPES.FOREST.toString()).onChange(calculateSpritesAndRender);
-    colors.addColor(colorMap, CELL_TYPES.ROCK.toString()).onChange(calculateSpritesAndRender);
+    dist.add(options, 'waterMaxElevation', 1, 100, 1).onChange(render);
+    dist.add(options, 'sandMaxElevation', 1, 100, 1).onChange(render);
+    dist.add(options, 'rockMinElevation', 1, 100, 1).onChange(render);
+    dist.add(options, 'grassMinMoisture', 1, 100, 1).onChange(render);
+    dist.add(options, 'tallGrassMinElevation', 1, 100, 1).onChange(render);
+    dist.add(options, 'tallGrassMinMoisture', 1, 100, 1).onChange(render);
+    dist.add(options, 'forestMinMoisture', 1, 100, 1).onChange(render);
+    dist.add(options, 'forestMaxMoisture', 1, 100, 1).onChange(render);
+    dist.add(options, 'forestMaxElevation', 1, 100, 1).onChange(render);
     gui.add(methods, 'Regenerate');
     return gui;
 }
+//# sourceMappingURL=gui.js.map
 
 var _a;
 var options = {
     width: 800,
     height: 600,
     mapContainerId: 'map',
-    resolution: 20,
+    resolution: 5,
     mapScale: 25,
     moistureScale: 25,
-    waterElevation: 15,
-    sandElevation: 5,
-    minimumWaterMoisture: 20,
-    rockElevation: 70,
-    grassMinimumMoisture: 16,
-    tallGrassMinimumMoisture: 30,
-    forestMinimumMoisture: 33,
-    forestMinimumElevation: 30,
+    waterMaxElevation: 15,
+    sandMaxElevation: 2,
+    rockMinElevation: 80,
+    grassMinMoisture: 16,
+    tallGrassMinElevation: 70,
+    tallGrassMinMoisture: 40,
+    forestMinMoisture: 40,
+    forestMaxMoisture: 40,
+    forestMaxElevation: 50,
 };
 var colorMap = (_a = {},
     _a[CELL_TYPES.ANT] = 0x4611aa,
     _a[CELL_TYPES.COLONY] = 0xe51476,
-    _a[CELL_TYPES.DEEP_WATER] = 0x496e5,
-    _a[CELL_TYPES.WATER] = 0x496e5,
+    _a[CELL_TYPES.DEEP_WATER] = 0x077dbc,
+    _a[CELL_TYPES.WATER] = 0x0a90d8,
     _a[CELL_TYPES.SAND] = 0xcea244,
     _a[CELL_TYPES.DRY_GRASS] = 0x73bb33,
     _a[CELL_TYPES.GRASS] = 0x59b513,
     _a[CELL_TYPES.TALL_GRASS] = 0x37a80f,
     _a[CELL_TYPES.FOREST] = 0x317515,
-    _a[CELL_TYPES.ROCK] = 0x606b68,
+    _a[CELL_TYPES.ROCK] = 0x393f3e,
     _a);
 var renderer = new Renderer(options, colorMap);
 var methods = {
