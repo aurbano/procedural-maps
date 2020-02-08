@@ -46601,7 +46601,7 @@ var GUI$1 = GUI;
 function setupGui(options, colorMap, methods, calculateSpritesAndRender, render) {
     var gui = new GUI$1({
         name: 'Setings',
-        closed: true,
+        closed: false,
     });
     var rendering = gui.addFolder('Rendering');
     rendering.open();

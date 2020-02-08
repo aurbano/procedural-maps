@@ -5,7 +5,7 @@ import { CELL_TYPES } from './genMap';
 export function setupGui(options: Options, colorMap: any, methods: any, calculateSpritesAndRender: any, render: any) {
   const gui = new dat.GUI({
     name: 'Setings',
-    closed: true,
+    closed: false,
   });
 
   const rendering = gui.addFolder('Rendering');
