@@ -22,3 +22,5 @@ The output resolution is also parameterized, for these examples I kept it slight
 
 ### Grasslands/Forests
 ![Grasslands](https://aurbano.eu/posts/procedural-maps/img/forest.png)
+
+[![Analytics](https://ga-beacon.appspot.com/UA-3181088-16/procedural-maps/readme)](https://github.com/aurbano)
