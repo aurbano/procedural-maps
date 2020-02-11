@@ -8,9 +8,9 @@ const options: Options = {
   height: 600,
   mapContainerId: 'map',
 
-  resolution: 5,
-  mapScale: 25, // bigger => softer land features
-  moistureScale: 25, // bigger => softer land features
+  resolution: 32,
+  mapScale: 10, // bigger => softer land features
+  moistureScale: 10, // bigger => softer land features
 
   waterMaxElevation: 15,
   sandMaxElevation: 2,
